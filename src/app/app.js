@@ -27,7 +27,7 @@ bot.on(eventTypes.MESSAGE, msg => {
  * Controller for processing of inline queries.
  */
 bot.on(eventTypes.INLINE_QUERY, query => {
-  let q_id = query.id;
+  let queryId = query.id;
   let answer = [];
   let id = uuidv4();
 
@@ -40,5 +40,5 @@ bot.on(eventTypes.INLINE_QUERY, query => {
     },
   };
   answer.push(text);
-  return bot.answerInlineQuery(q_id, answer);
+  return bot.answerInlineQuery(queryId, answer);
 });
