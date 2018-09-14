@@ -1,21 +1,35 @@
+/**
+ * Read variables from environment.
+ */
 const TOKEN = process.env.TELEGRAM_TOKEN;
-const uuidv1 = require('uuid/v1');
 
-const eventTypes = require('./constants/eventTypes');
+/**
+ * Random UUID generator.
+ * @type {v4}
+ */
+const uuidv4 = require('uuid/v4');
+
 const TelegramBot = require('node-telegram-bot-api');
+const eventTypes = require('./constants/eventTypes');
 
 const bot = new TelegramBot(TOKEN, {polling: true});
 
+/**
+ * Controller for messages processing.
+ */
 bot.on(eventTypes.MESSAGE, msg => {
   const chatId = msg.chat.id;
 
   return bot.sendMessage(chatId, 'I see you');
 });
 
+/**
+ * Controller for processing of inline queries.
+ */
 bot.on(eventTypes.INLINE_QUERY, query => {
   let q_id = query.id;
   let answer = [];
-  let id = uuidv1();
+  let id = uuidv4();
 
   let text = {
     id: id,
@@ -27,8 +41,4 @@ bot.on(eventTypes.INLINE_QUERY, query => {
   };
   answer.push(text);
   return bot.answerInlineQuery(q_id, answer);
-});
-
-bot.on(eventTypes.CHOSEN_INLINE_RESULT, query => {
-  return console.log(query);
 });
