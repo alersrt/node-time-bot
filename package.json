@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {},
   "dependencies": {
+    "uuid": "3.3.2",
     "node-telegram-bot-api": "0.30.0"
   },
   "devDependencies": {
