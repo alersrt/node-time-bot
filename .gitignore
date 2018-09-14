@@ -1,0 +1,5 @@
+# Exclude node libraries.
+node_modules/
+
+# Exclude JetBrains files.
+.idea/

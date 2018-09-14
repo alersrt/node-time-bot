@@ -1,0 +1,13 @@
+{
+    "name": "simple-telegram-bot",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {},
+    "dependencies": {
+        "node-telegram-bot-api": "0.30.0"
+    },
+    "devDependencies": {
+        "mocha": "5.2.0",
+        "chai": "4.1.2"
+    }
+}
