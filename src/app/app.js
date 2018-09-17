@@ -3,42 +3,48 @@
  */
 const TOKEN = process.env.TELEGRAM_TOKEN;
 
-/**
- * Random UUID generator.
- * @type {v4}
- */
-const uuidv4 = require('uuid/v4');
-
 const TelegramBot = require('node-telegram-bot-api');
-const eventTypes = require('./constants/eventTypes');
+const {event} = require('./events');
+const {command} = require('./commands');
+const {handler} = require('./handlers');
 
 const bot = new TelegramBot(TOKEN, {polling: true});
 
 /**
  * Controller for messages processing.
  */
-bot.on(eventTypes.MESSAGE, msg => {
-  const chatId = msg.chat.id;
-
-  return bot.sendMessage(chatId, 'I see you');
+bot.on(event.MESSAGE, message => {
+  switch (message.text) {
+    case command.HELP :
+      let answer = handler.help();
+      return bot.sendMessage(message.chat.id, answer);
+    default:
+      return () => {};
+  }
 });
 
 /**
  * Controller for processing of inline queries.
  */
-bot.on(eventTypes.INLINE_QUERY, query => {
-  let queryId = query.id;
-  let answer = [];
-  let id = uuidv4();
-
-  let text = {
-    id: id,
-    type: 'article',
-    title: 'Dino about',
-    input_message_content: {
-      message_text: 'There is a dino which is saying "I love you!"...',
+bot.on(event.INLINE_QUERY, query => {
+  let items = [
+    {
+      id: 0,
+      type: 'article',
+      title: 'Help',
+      input_message_content: {
+        message_text: handler.help(),
+      },
     },
-  };
-  answer.push(text);
-  return bot.answerInlineQuery(queryId, answer);
+    {
+      id: 1,
+      type: 'article',
+      title: 'Current time',
+      input_message_content: {
+        message_text: handler.current(query.from.id),
+      },
+    },
+  ];
+
+  return bot.answerInlineQuery(query.id, items);
 });
