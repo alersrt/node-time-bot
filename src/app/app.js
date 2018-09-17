@@ -1,26 +1,35 @@
-/**
- * Read variables from environment.
- */
 const TOKEN = process.env.TELEGRAM_TOKEN;
 
 const TelegramBot = require('node-telegram-bot-api');
-const {event} = require('./events');
-const {command} = require('./commands');
+const {event} = require('./constants/events');
+const {command} = require('./constants/commands');
 const {handler} = require('./handlers');
 
 const bot = new TelegramBot(TOKEN, {polling: true});
 
 /**
- * Controller for messages processing.
+ * Controller for text messages processing.
  */
-bot.on(event.MESSAGE, message => {
+bot.on(event.TEXT, message => {
+  let userId = message.from.id;
+  let answer = 'Nothing';
   switch (message.text) {
     case command.HELP :
-      let answer = handler.help();
-      return bot.sendMessage(message.chat.id, answer);
-    default:
-      return () => {};
+      answer = handler.help();
+      break;
+    case command.CURRENT :
+      answer = handler.current(userId);
+      break;
   }
+  return bot.sendMessage(message.chat.id, answer);
+});
+
+bot.on(event.LOCATION, message => {
+  let userId = message.from.id;
+  let location = message.location;
+  handler.store(userId, location);
+
+  return bot.sendMessage(message.chat.id, 'Your location was stored...')
 });
 
 /**

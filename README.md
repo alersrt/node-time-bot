@@ -1,4 +1,4 @@
-# North Nomad Bot
+# Telegram time bot
 
 Simple telegram bot which is used for utils' goals.
 
@@ -8,6 +8,9 @@ Simple telegram bot which is used for utils' goals.
 
 ## Features
 
-### Inline queries features
+### Inline query features
+Prints time at location which will to send to this bot called via short inline `@<botame>bot`.
 
-### Standard queries features
+
+### Standard features
+Send your location to this bot and post your current time when you need.
