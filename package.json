@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {},
   "dependencies": {
-    "uuid": "3.3.2",
     "node-telegram-bot-api": "0.30.0",
-    "lokijs": "1.5.5"
+    "lokijs": "1.5.5",
+    "querystringify": "2.0.0",
+    "node-fetch": "2.2.0"
   },
   "devDependencies": {
     "mocha": "5.2.0",

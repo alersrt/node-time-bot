@@ -7,10 +7,13 @@ const records = db.addCollection('records');
  * Saves user and its location to database.
  * @param userId user's identifier.
  * @param location user's location.
- * @return {any}
+ * @return {Promise<any>}
  */
 function save(userId, location) {
-  return records.insert({id: userId, location: location});
+  return new Promise(resolve => {
+    let inserted = records.insert({userId: userId, location: location});
+    resolve(inserted);
+  });
 }
 
 /**
@@ -24,15 +27,16 @@ function save(userId, location) {
  * }
  *
  * @param userId user identifier.
- * @return {*}
+ * @return {Promise<any>}
  */
 function findByUserId(userId) {
-  return records.findOne({'id': {'$eq': userId}});
+  return new Promise(resolve => {
+    let record = records.findOne({'userId': {'$eq': userId}});
+    resolve(record);
+  });
 }
 
-module.exports = {
-  repository: {
-    save: save,
-    findByUserId: findByUserId,
-  },
+module.exports.repository = {
+  save: save,
+  findByUserId: findByUserId,
 };

@@ -1,7 +1,5 @@
-module.exports = {
-  command: {
-    HELP: '/help',
-    START: '/start',
-    CURRENT: '/current',
-  },
+module.exports.command = {
+  HELP: '/help',
+  START: '/start',
+  CURRENT: '/current',
 };

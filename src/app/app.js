@@ -11,25 +11,28 @@ const bot = new TelegramBot(TOKEN, {polling: true});
  * Controller for text messages processing.
  */
 bot.on(event.TEXT, message => {
+  let chatId = message.chat.id;
   let userId = message.from.id;
-  let answer = 'Nothing';
   switch (message.text) {
     case command.HELP :
-      answer = handler.help();
-      break;
+      let helpMessage = 'It is a time-utility bot. You can to specify your location for this bot and link your time via short command';
+      return bot.sendMessage(chatId, helpMessage);
     case command.CURRENT :
-      answer = handler.current(userId);
-      break;
+      return handler.current(userId).then(time => {
+        let timeMessage = time.toISOString();
+        return bot.sendMessage(chatId, timeMessage);
+      });
   }
-  return bot.sendMessage(message.chat.id, answer);
+
 });
 
 bot.on(event.LOCATION, message => {
   let userId = message.from.id;
   let location = message.location;
-  handler.store(userId, location);
-
-  return bot.sendMessage(message.chat.id, 'Your location was stored...')
+  return handler.store(userId, location)
+      .then(() => {
+        return bot.sendMessage(message.chat.id, 'Your location was stored...');
+      }).catch(error => error);
 });
 
 /**
