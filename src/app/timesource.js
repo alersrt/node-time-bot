@@ -7,7 +7,14 @@ const timezonedb = require('./external-api/timezonedb')(TIMEZONEDB_TOKEN);
  * @return {*}
  */
 function getTimeinfo(location) {
-  return timezonedb.getTimeZone(location);
+  return timezonedb.getTimeZone(location).then(timezoneInfo => {
+    return {
+      // "gmtOffset" contains offset from GMT in seconds.
+      // In our case we need milliseconds.
+      gmtOffset: timezoneInfo.gmtOffset * 1000,
+      timezone: timezoneInfo.zoneName,
+    };
+  });
 }
 
 module.exports.timeutil = {

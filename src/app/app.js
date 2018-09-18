@@ -1,6 +1,7 @@
 const TOKEN = process.env.TELEGRAM_TOKEN;
 
 const TelegramBot = require('node-telegram-bot-api');
+
 const {event} = require('./constants/events');
 const {command} = require('./constants/commands');
 const {handler} = require('./handlers');
@@ -19,8 +20,7 @@ bot.on(event.TEXT, message => {
       return bot.sendMessage(chatId, helpMessage);
     case command.CURRENT :
       return handler.current(userId).then(time => {
-        let timeMessage = time.toISOString();
-        return bot.sendMessage(chatId, timeMessage);
+        return bot.sendMessage(chatId, time);
       });
   }
 
@@ -39,24 +39,18 @@ bot.on(event.LOCATION, message => {
  * Controller for processing of inline queries.
  */
 bot.on(event.INLINE_QUERY, query => {
-  let items = [
-    {
-      id: 0,
-      type: 'article',
-      title: 'Help',
-      input_message_content: {
-        message_text: handler.help(),
+  let userId = query.from.id;
+  handler.current(userId).then(time => {
+    let items = [
+      {
+        id: 1,
+        type: 'article',
+        title: 'Current time',
+        input_message_content: {
+          message_text: time,
+        },
       },
-    },
-    {
-      id: 1,
-      type: 'article',
-      title: 'Current time',
-      input_message_content: {
-        message_text: handler.current(query.from.id),
-      },
-    },
-  ];
-
-  return bot.answerInlineQuery(query.id, items);
+    ];
+    return bot.answerInlineQuery(query.id, items);
+  });
 });

@@ -1,22 +1,20 @@
+const moment = require('moment-timezone');
+
 const {repository} = require('./datasource');
 const {timeutil} = require('./timesource');
 
 /**
  * Returns current time for the user.
  * @param userId id of the user which tries to get his current time.
- * @return {Promise<Date | never>}
+ * @return {Promise<string | never>}
  */
 function currentTimeHandler(userId) {
   return repository.findByUserId(userId)
-      .then(value => {
-        return !!value ? timeutil.timeinfo(value.location) : null;
-      }).then(info => {
-        let nowTime = new Date();
-        if (!!info) {
-          let resultTime = nowTime.getTime() + info.gmtOffset * 1000;
-          nowTime = new Date(resultTime);
-        }
-        return nowTime;
+      .then(value => !!value ? timeutil.timeinfo(value.location) : null)
+      .then(info => {
+        let stringFormat = 'ddd D, HH:mm:ss ([UTC]Z)';
+        // Use Greenwich time by default.
+        return moment().tz(!!info ? info.timezone : 'Etc/Greenwich').format(stringFormat);
       });
 }
 
