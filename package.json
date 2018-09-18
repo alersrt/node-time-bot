@@ -2,7 +2,9 @@
   "name": "simple-telegram-bot",
   "version": "0.1.0",
   "private": true,
-  "scripts": {},
+  "scripts": {
+    "start": "node ./src/app/app.js"
+  },
   "dependencies": {
     "node-telegram-bot-api": "0.30.0",
     "lokijs": "1.5.5",
