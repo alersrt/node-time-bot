@@ -12,7 +12,7 @@ function currentTimeHandler(userId) {
   return repository.findByUserId(userId)
       .then(value => !!value ? timeutil.timeinfo(value.location) : null)
       .then(info => {
-        let stringFormat = 'ddd D, HH:mm:ss ([UTC]Z)';
+        let stringFormat = 'ddd D, HH:mm:ss z ([UTC]Z)';
         // Use Greenwich time by default.
         return moment().tz(!!info ? info.timezone : 'Etc/Greenwich').format(stringFormat);
       });
