@@ -12,10 +12,11 @@ Simple telegram bot which is used for utils' goals.
 ### Inline query features
 Prints time at location which will to send to this bot called via short inline `@<botame>bot`.
 
-
 ### Standard features
 Send your location to this bot and post your current time when you need.
 
-
+### Commands
+- `/help` - prints help message
+- `/current` - prints current time
 
 [1]: https://timezonedb.com
