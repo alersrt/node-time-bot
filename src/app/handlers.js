@@ -8,14 +8,11 @@ const {timeutil} = require('./timesource');
  * @param userId id of the user which tries to get his current time.
  * @return {Promise<string | never>}
  */
-function currentTimeHandler(userId) {
-  return repository.findByUserId(userId)
-      .then(value => !!value ? timeutil.timeinfo(value.location) : null)
-      .then(info => {
-        let stringFormat = 'ddd D, HH:mm:ss z ([UTC]Z)';
-        // Use Greenwich time by default.
-        return moment().tz(!!info ? info.timezone : 'Etc/Greenwich').format(stringFormat);
-      });
+async function currentTimeHandler(userId) {
+  let userInfo = await repository.findByUserId(userId);
+  let timeInfo = !!userInfo ? await timeutil.timeinfo(userInfo.location) : null;
+  let stringFormat = 'ddd D, HH:mm:ss z ([UTC]Z)';
+  return moment().tz(!!timeInfo ? timeInfo.timezone : 'Etc/Greenwich').format(stringFormat);
 }
 
 /**
@@ -24,8 +21,8 @@ function currentTimeHandler(userId) {
  * @param location user location.
  * @return {Promise<any>}
  */
-function storeHandler(userId, location) {
-  return repository.save(userId, location);
+async function storeHandler(userId, location) {
+  return await repository.save(userId, location);
 }
 
 module.exports.handler = {

@@ -11,7 +11,7 @@ const bot = new TelegramBot(TOKEN, {polling: true});
 /**
  * Controller for text messages processing.
  */
-bot.on(event.TEXT, message => {
+bot.on(event.TEXT, async message => {
   let chatId = message.chat.id;
   let userId = message.from.id;
   switch (message.text) {
@@ -19,38 +19,34 @@ bot.on(event.TEXT, message => {
       let helpMessage = 'It is a time-utility bot. You can to specify your location for this bot and link your time via short command';
       return bot.sendMessage(chatId, helpMessage);
     case command.CURRENT :
-      return handler.current(userId).then(time => {
-        return bot.sendMessage(chatId, time);
-      });
+      let time = await handler.current(userId);
+      return bot.sendMessage(chatId, time);
   }
-
 });
 
-bot.on(event.LOCATION, message => {
+bot.on(event.LOCATION, async message => {
+  let chatId = message.chat.id;
   let userId = message.from.id;
   let location = message.location;
-  return handler.store(userId, location)
-      .then(() => {
-        return bot.sendMessage(message.chat.id, 'Your location was stored...');
-      }).catch(error => error);
+  let savedUser = await handler.store(userId, location);
+  return bot.sendMessage(chatId, 'Your location was stored...');
 });
 
 /**
  * Controller for processing of inline queries.
  */
-bot.on(event.INLINE_QUERY, query => {
+bot.on(event.INLINE_QUERY, async query => {
+  let queryId = query.id;
   let userId = query.from.id;
-  handler.current(userId).then(time => {
-    let items = [
-      {
-        id: 1,
-        type: 'article',
-        title: 'Current time',
-        input_message_content: {
-          message_text: time,
-        },
+  let items = [
+    {
+      id: 1,
+      type: 'article',
+      title: 'Current time',
+      input_message_content: {
+        message_text: await handler.current(userId),
       },
-    ];
-    return bot.answerInlineQuery(query.id, items);
-  });
+    },
+  ];
+  return bot.answerInlineQuery(queryId, items);
 });
